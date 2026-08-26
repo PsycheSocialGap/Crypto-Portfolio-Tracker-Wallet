@@ -1,0 +1,23 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Restore
+        run: dotnet restore Crypto-Portfolio-Tracker-Wallet.sln
+      - name: Build
+        run: dotnet build Crypto-Portfolio-Tracker-Wallet.sln --configuration Release --no-restore
+      - name: Test
+        run: dotnet test Crypto-Portfolio-Tracker-Wallet.sln --no-build --configuration Release
+      - name: Publish
+        run: dotnet publish src/Crypto-Portfolio-Tracker-Wallet/Crypto-Portfolio-Tracker-Wallet.csproj --configuration Release --no-build --output ./artifacts
